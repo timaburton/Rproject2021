@@ -1,47 +1,59 @@
 setwd("C:/Users/megan/Desktop/RProject/RProject2021")
-
-uses <- list.files(("../RProject2021/countryY"), pattern = ".txt", full.name = TRUE)
+direct <- list.dirs(".")
+alltxt <- c()
+for (i in 1:length(direct)){
+    alltxt <- c(alltxt, list.files(dirs[i], pattern = ".txt", full.names = TRUE))
+}
+read.table("../RProject2021/countryY/screen_120.txt")
 #change files in the directory that are .txt files into .csv files
-for (i in 1:length(uses)){
-  input<-uses[i]
-  output <- paste0(gsub("\\.txt$", "", input), ".csv")
-  data = read.delim(input, header = TRUE)   
-  write.table(data, file=output, sep=",", col.names=TRUE, row.names=FALSE)
+for (i in 1:length(alltxt)){
+  input<-read.table(alltxt[i], sep = "", stringsAsFactors = FALSE, header=TRUE)
+  out <- sub(".txt", ".csv", alltxt[i])
+  write.table(input, file=out, sep =",", col.names = TRUE, row.names = FALSE)
 }
 
 #add all csv files into a single file with two added columns: country and DayofYear
+#handle NAs
+#define set of files
+#open each file
+#add columns country and day of year in the file name
+#append!/combine
 files <- function(dir){
+  dirs <- list.files(( path = "."))
+  allfiles <- c()
+  for (k in 1:length(dirs)){
+  allfiles <- c(allfiles, list.files(dirs[k], pattern = ".csv", full.names = TRUE))
+  }
+}
   #grep for the two countries directory
-  dirs <- list.dirs(("../RProject2021/"))
-  used <- list.files(path = dirs, pattern = ".csv", full.names = TRUE)
-  for (i in 1:length(used)){
       #add country X to country row of file
       #add country Y to country row of file
     #add not containing screen_ (numbers) to dayofyear row of file
-    if (!exists("dataset")){
-      dataset <- read.csv(used[i], header=TRUE)
+    dirs <- list.dirs(("../RProject2021/"))
+    df <- read.csv(allfiles[1])
+    if(grepl("countryX", allfiles[1])==TRUE){
+      df$country <- "X"
+    }else{
+      df$country <- "Y"
     }
-    if (exists("dataset")){
-    tempory <-read.csv(used[i], header=TRUE)
-    dataset <-unique(rbind(dataset, tempory))
-    rm(tempory)
+    day <- regmatches(allfiles[1], regexpr("[0-9].*[0-9]", allfiles[1]))
+    df$dayOfYear <- day
+    for (i in 2:length(allfiles)){
+      d <- read.csv(allfiles[i])
+      if(grepl("countryX", allfiles[i])==TRUE){
+        d$country <- "X"
+      }
+      if (grepl("countryY", allfiles[i])==TRUE){
+        d$country <- "Y"
+      }
+      day <- regmatches(allfiles[i], regexpr("[0-9].*[0-9]", allfiles[i]))
+      d$dayOfYear <- day
+      df <- bind_rows(df, d)
     }
-    
-    #if usable contains country X
-   if (grepl("countryX", used[i])==TRUE){
-     dataset$country <- "country X"
-   }
-    #if usable contains country y 
-    if (grepl("countryY", used[i])==TRUE){
-      dataset$country <- "country Y"
-    }
-    
-    dataset$DayOfYear <- used[i]
-  }
-  
-  write.csv(dataset,file="alls.csv", col.names = TRUE)
-}
-allD <- read.csv("allData.csv", header = TRUE, stringsAsFactors = FALSE)
+    allD <- as.data.frame(df)
+
+
+allDe <- read.csv("allData.csv", header = TRUE, stringsAsFactors = FALSE)
 
 summary <- function(allD){
   #number of screens run
@@ -60,6 +72,7 @@ for (j in 1:total){
   }
 }
   percent <- (numOfInfected/total)*100
+  print(paste("The number of infected patients is" , numOfInfected))
   print(paste("The percent of infected patients is" , percent, "%"))
   #male vs female patients
   fem <- 0
@@ -102,9 +115,12 @@ for (j in 1:total){
   }
   agedis=matrix(0,nrow=0,ncol = 6)
   colnames(agedis) <- c("under 20", "20-40", "40-60", "60-80", "80-100", "over 100")
-  ages <- c(zeroto20,twentyto40,fourtyto60,sixtyto80,eightyto100,over100)
-  agedistribution <- rbind(agedis,ages)
-  agedistribution
+  counts <- c(zeroto20,twentyto40,fourtyto60,sixtyto80,eightyto100,over100)
+  agedistribution <- rbind(agedis,counts)
+  
+#dayOfYear vs infected count with different colors for each country
+#type of marker vs amount of each marker for each country
+
 
 #number of people from each country with each marker 
       xcountry <- allD[allD$country == "X",]
@@ -145,7 +161,7 @@ for (j in 1:total){
         }
       }
       #print(paste("The number of infected patients in country Y is" , numOfInfectedY))
-      y <- c("country", "infected", "marker 1", "marker 2","marker 3","marker 4","marker 5","marker 6","marker 7",
+      y <- c("country", "total infected", "marker 1", "marker 2","marker 3","marker 4","marker 5","marker 6","marker 7",
              "marker 8","marker 9","marker 10")
       A=matrix(0,nrow=0,ncol=12)
       colnames(A) = y
@@ -155,39 +171,53 @@ for (j in 1:total){
       C <- rbind(B, rowY)
       summ <- as.data.frame(C)
       PatientAges<- as.data.frame(agedistribution)
+      print(summ)
+      print(PatientAges)
+#total number of infections per day in each country
+      days <- c(120:175)
+      vectoX <- c()
+      vectoY <- c()
+      for (b in 120:175) {
+        beginning <- allD[allD$dayofYear == b,]
+        beginningY <- beginning[beginning$country == "Y",]
+        numOfInfectedYinB <- 0
+        for (j in 1:nrow(beginningY)){
+          for (i in 1:ncol(beginningY)){
+            if(ycountry[j,i] == 1){
+              numOfInfectedYinB = numOfInfectedYinB + 1
+              break
+            } else{
+              numOfInfectedYinB = numOfInfectedYinB
+            }
+          }
+        }
+        
+        beginningX <- beginning[beginning$country == "X",]
+        numOfInfectedXinB <- 0
+        for (j in 1:nrow(beginningX)){
+          for (i in 1:ncol(beginningX)){
+            if(xcountry[j,i] == 1){
+              numOfInfectedXinB = numOfInfectedXinB + 1
+              break
+            } else{
+              numOfInfectedXinB = numOfInfectedXinB
+            }
+          }
+        }
+        vectoX <- c(vectoX, numOfInfectedXinB)
+        vectoY <- c(vectoY, numOfInfectedYinB)
+      }
+      library(reshape2)
+      InfectedPerDay <- data.frame(days, vectoX, vectoY)
+      colnames(InfectedPerDay) <- c("days", "# of infected in X", "# of infected in Y")
+    InfectedPerDayymelt <- melt(InfectedPerDay, id.vars = c("days"))
+    print(InfectedPerDay)
+#library(ggplot2)
 
-#the first 5 days number of infected people in each country 
-  
-for (b in 120:125) {
-  beginning <- allD[allD$dayofYear == b,]
-  beginningY <- beginning[beginning$country == "Y",]
-  numOfInfectedYinB <- 0
-  for (j in 1:nrow(beginningY)){
-    for (i in 1:ncol(beginningY)){
-      if(ycountry[j,i] == 1){
-        numOfInfectedYinB = numOfInfectedYinB + 1
-        break
-      } else{
-        numOfInfectedYinB = numOfInfectedYinB
-      }
-    }
-  }
-  
-  beginningX <- beginning[beginning$country == "X",]
-  numOfInfectedXinB <- 0
-  for (j in 1:nrow(beginningX)){
-    for (i in 1:ncol(beginningX)){
-      if(xcountry[j,i] == 1){
-        numOfInfectedXinB = numOfInfectedXinB + 1
-        break
-      } else{
-        numOfInfectedXinB = numOfInfectedXinB
-      }
-    }
-  }
-  print(paste("The number of people in country Y infected on day " , b, "is: " ,  numOfInfectedYinB))
-  print(paste("The number of people in country X infected on day " , b, "is: " ,  numOfInfectedXinB))
-}
+#ggplot(InfectedPerDay, aes(days))+
+ # geom_bar()
+
+#the total number of infected people over the first 5 days in each country
       beginning <- allD[allD$dayofYear < 125,]
       beginningY <- beginning[beginning$country == "Y",]
       numOfInfectedYinB <- 0
@@ -218,5 +248,4 @@ for (b in 120:125) {
       print(paste("The total number of people infected in country X on day 125 is", numOfInfectedXinB))
       
 }
-summary(allD)
-
+summary(df)
