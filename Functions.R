@@ -5,13 +5,14 @@ setwd("~/Desktop/RProject2021")
   #define set of files and loop 
   #load an original file 
   #write out data in .csv format 
-Convert_csv<-function(x){
-  for i in directory{
-    read.tables(file=[i], header=TRUE, sep="\t")
+Convert_csv<-function(dir){
+  path<-list.files(path=dir)
+  for (x in 1:length(path)){
+    df<-fread(path[x])
+    data<-read.table(files[x], header = TRUE)
+    write.csv(data,
+              file=sub(pattern="\\.txt$", replacement = ".csv", x=x))
   }
-  setwd(x)
-   data<-Read.table("*.csv",header=TRUE, sep="\t", sep=" ")
-  return(data.csv)
 }
   
 ##Compile all Data into a single csv file 
