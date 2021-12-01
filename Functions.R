@@ -1,31 +1,38 @@
 setwd("~/Desktop/RProject2021")
 ##Assisting Functions for Project Code##
 
-##Convert all files into csv files from space/tab delimintated ones 
+##Convert all files into csv files from space/tab delimintated ones##
   #define set of files and loop 
   #load an original file 
   #write out data in .csv format 
+
 Convert_csv<-function(dir){
-  path<-list.files(path=dir)
-  for (x in 1:length(path)){
-    df<-fread(path[x])
-    data<-read.table(files[x], header = TRUE)
+  setwd(dir) #Error in file(file, "rt"): cannot open the connection
+  path<-list.files(dir)
+  for (i in path){
+    file<-paste0(dir, path[i])
+    data<-read.table(file, header = TRUE, stringsAsFactors = FALSE)
     write.csv(data,
               file=sub(pattern="\\.txt$", replacement = ".csv", x=x))
   }
 }
   
-##Compile all Data into a single csv file 
+##Compile all Data into a single csv file##
   #define our set 
   #open each file 
   #add columns 
-compile<-function(){
-  read.csv("*.csv", header = TRUE, sep=",")
-  #compile all data into one file#
-  file$country=country
-  file$dayofYear=dayofYear 
-  cbind(, dayofYear, country)
-  #argument to handle NAs 
+
+compile<-function(dir, name, where){
+  setwd(dir) #Alter so it compiles both countries 
+  for(data in list.files()){
+    temp<-read.csv(data, header=TRUE)
+    dataset<-rbind(temp)
+    country<-print(where) 
+    dataset$country<-country
+    dayofYear<-print(120:175) #Fix it so dayofYear shows up 
+    dataset$dayofYear
+    write.csv(dataset, file=name)
+  }
 }
 
 ##Summarize the compiled daya in terms of number of screen runs, percent patients infected 
