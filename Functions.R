@@ -22,14 +22,14 @@ Convert_csv<-function(dir){
   #open each file 
   #add columns 
 
-compile<-function(dir, name, where){
-  setwd(dir) #Alter so it compiles both countries 
-  for(data in list.files()){
-    temp<-read.csv(data, header=TRUE)
+compile<-function(dir, name){
+  for(i in 1:length(files)){
+    files<-list.files(pattern=".csv$", recursive=TRUE)
+    temp<-read.csv(files[i], header=TRUE) #Object 'files' not found
     dataset<-rbind(temp)
-    country<-print(where) 
+    country<-print("Country*") 
     dataset$country<-country
-    dayofYear<-print(120:175) #Fix it so dayofYear shows up 
+    dayofYear<-print("120:175") #Fix it so dayofYear shows up 
     dataset$dayofYear
     write.csv(dataset, file=name)
   }
