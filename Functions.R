@@ -8,12 +8,11 @@ setwd("~/Desktop/RProject2021")
 
 Convert_csv<-function(dir){
   setwd(dir) #Error in file(file, "rt"): cannot open the connection
-  path<-list.files(dir)
-  for (i in path){
+  path<-list.files(pattern=".txt")
+  for (i in 1:length(path)){
     file<-paste0(dir, path[i])
-    data<-read.table(file, header = TRUE, stringsAsFactors = FALSE)
-    write.csv(data,
-              file=sub(pattern="\\.txt$", replacement = ".csv", x=x))
+    data<-read.table(file, header= TRUE, stringsAsFactors = FALSE)
+    write.csv(data, file=sub(pattern=".txt", replacement=".csv"))
   }
 }
   
