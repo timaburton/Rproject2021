@@ -1,10 +1,12 @@
 setwd("C:/Users/megan/Desktop/RProject/RProject2021")
 direct <- list.dirs(".")
+library(reshape2)
 alltxt <- c()
+#finds all the text files in each directory
 for (i in 1:length(direct)){
     alltxt <- c(alltxt, list.files(dirs[i], pattern = ".txt", full.names = TRUE))
 }
-read.table("../RProject2021/countryY/screen_120.txt")
+
 #change files in the directory that are .txt files into .csv files
 for (i in 1:length(alltxt)){
   input<-read.table(alltxt[i], sep = "", stringsAsFactors = FALSE, header=TRUE)
@@ -12,7 +14,8 @@ for (i in 1:length(alltxt)){
   write.table(input, file=out, sep =",", col.names = TRUE, row.names = FALSE)
 }
 
-#add all csv files into a single file with two added columns: country and DayofYear
+
+#finds all the csv files in each directory
 files <- function(){
   dirs <- list.files(( path = "."))
   allfiles <- c()
@@ -20,8 +23,10 @@ files <- function(){
   allfiles <- c(allfiles, list.files(dirs[k], pattern = ".csv", full.names = TRUE))
   }
 }
+#add all csv files into a single file with two added columns: country and DayofYear
     dirs <- list.dirs(("../RProject2021/"))
     library(dplyr)
+    #establishes the first file to be compiled and df
     df <- read.csv(allfiles[1], header = TRUE)
     if(grepl("countryX", allfiles[1])==TRUE){
       df$country <- "X"
@@ -32,22 +37,27 @@ files <- function(){
     df$dayofYear <- day
     for (i in 2:length(allfiles)){
       d <- read.csv(allfiles[i], header = TRUE)
+      #adds X for country X
       if(grepl("countryX", allfiles[i])==TRUE){
         d$country <- "X"
       }
+      #adds Y for country Y
       if (grepl("countryY", allfiles[i])==TRUE){
         d$country <- "Y"
       }
+      #adds the day of the year
       day <- regmatches(allfiles[i], regexpr("[0-9].*[0-9]", allfiles[i]))
       d$dayofYear <- day
       df <- bind_rows(df, d)
     }
     allD <- as.data.frame(df)
+    #writes a file with all compiled data
     write.csv(allD, file = "allOfData.csv", col.names = TRUE, row.names = FALSE)
     allDa <- read.csv("allOfData.csv", header = TRUE, stringsAsFactors = FALSE)
-
+#given compiled data
 allDe <- read.csv("allData.csv", header = TRUE, stringsAsFactors = FALSE)
 
+#analysis of compiled data
 summary <- function(allD){
   #number of screens run
   total <- nrow(allD)
@@ -110,10 +120,6 @@ for (j in 1:total){
   colnames(agedis) <- c("under 20", "20-40", "40-60", "60-80", "80-100", "over 100")
   counts <- c(zeroto20,twentyto40,fourtyto60,sixtyto80,eightyto100,over100)
   agedistribution <- rbind(agedis,counts)
-  
-#dayOfYear vs infected count with different colors for each country
-#type of marker vs amount of each marker for each country
-
 
 #number of people from each country with each marker 
       xcountry <- allD[allD$country == "X",]
@@ -141,7 +147,7 @@ for (j in 1:total){
           }
         }
       }
-      #print(paste("The number of infected patients in country X is" , numOfInfectedX))
+      print(paste("The number of infected patients in country X is" , numOfInfectedX))
       numOfInfectedY <- 0
       for (j in 1:nrow(ycountry)){
         for (i in 1:ncol(ycountry)){
@@ -153,26 +159,34 @@ for (j in 1:total){
           }
         }
       }
-      #print(paste("The number of infected patients in country Y is" , numOfInfectedY))
-      y <- c("country", "total infected", "marker 1", "marker 2","marker 3","marker 4","marker 5","marker 6","marker 7",
+      print(paste("The number of infected patients in country Y is" , numOfInfectedY))
+      
+      y <- c("country", "marker 1", "marker 2","marker 3","marker 4","marker 5","marker 6","marker 7",
              "marker 8","marker 9","marker 10")
-      A=matrix(0,nrow=0,ncol=12)
+      A=matrix(0,nrow=0,ncol=11)
       colnames(A) = y
-      rowX <- c("X", numOfInfectedX, as.numeric(vectx))
-      rowY <- c("Y", numOfInfectedY, as.numeric(vecty))
+      rowX <- c("X", as.numeric(vectx))
+      rowY <- c("Y", as.numeric(vecty))
       B <- rbind(A, rowX)
       C <- rbind(B, rowY)
       summ <- as.data.frame(C)
+      #makes the data readable for ggplot
       summs <- melt(summ, id.vars = "country")
+      summs$value <- as.numeric(summs$value)
       PatientAges<- as.data.frame(agedistribution)
       print(summs)
       print(PatientAges)
+      #type of marker vs amount of each marker for each country
       library(ggplot2)
-      ggplot(summs, aes(variable, value, color = as.factor(country)))+
+      MarkerGraph <-ggplot(summs, aes(variable, value, color = country))+
         geom_point()+
         theme_classic()+
+        xlab("Maker Types for the Virus") +
+        ylab("Number of Infections with each marker type") +
         theme(axis.text.x = element_text(angle=65, vjust=0.6))+
-        scale_y_discrete()
+        scale_y_continuous()
+      MarkerGraph
+      ggsave("markerGraph.png", plot = MarkerGraph, width =5, height = 5)
       
 #total number of infections per day in each country
       days <- c(120:175)
@@ -211,16 +225,18 @@ for (j in 1:total){
       library(reshape2)
       InfectedPerDay <- data.frame(days, vectoX, vectoY)
       colnames(InfectedPerDay) <- c("days", "# of infected in X", "# of infected in Y")
+    #makes it readable for ggplot
     InfectedPerDayymelt <- melt(InfectedPerDay, id.vars = "days")
-    InfectedPerDayymelt
-    print(InfectedPerDayymelt)
-library(ggplot2)
-ggplot(InfectedPerDayymelt, aes(days,value, color = as.factor(variable)))+
+    print(InfectedPerDay)
+#dayOfYear vs infected count with different colors for each country
+InfectionvsDay<- ggplot(InfectedPerDayymelt, aes(days,value, color = as.factor(variable)))+
   geom_line()+
   xlab("Days of Year") +
   ylab("count of infection") +
   theme(legend.title=element_blank())+
   theme_classic()
+InfectionvsDay
+ggsave("InfectionVsDay.png",InfectionvsDay, width = 5, height = 5)
 #ggplot(InfectedPerDay, aes(days))+
  # geom_col()
 
