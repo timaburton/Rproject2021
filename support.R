@@ -120,6 +120,13 @@ for (j in 1:total){
   colnames(agedis) <- c("under 20", "20-40", "40-60", "60-80", "80-100", "over 100")
   counts <- c(zeroto20,twentyto40,fourtyto60,sixtyto80,eightyto100,over100)
   agedistribution <- rbind(agedis,counts)
+  library(dplyr)
+  aged<-ggplot(allD,aes(age))+
+    geom_histogram(stat = "count", fill = "black")+
+    theme_classic()+
+    xlim(0,125)+
+    labs(title = "Age Distribution (Outliers of over 125 not shown)")
+  ggsave("AgeDistribution.png", aged, width =5, height =5)
 
 #number of people from each country with each marker 
       xcountry <- allD[allD$country == "X",]
