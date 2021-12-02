@@ -13,33 +13,25 @@ for (i in 1:length(alltxt)){
 }
 
 #add all csv files into a single file with two added columns: country and DayofYear
-#handle NAs
-#define set of files
-#open each file
-#add columns country and day of year in the file name
-#append!/combine
-files <- function(dir){
+files <- function(){
   dirs <- list.files(( path = "."))
   allfiles <- c()
   for (k in 1:length(dirs)){
   allfiles <- c(allfiles, list.files(dirs[k], pattern = ".csv", full.names = TRUE))
   }
 }
-  #grep for the two countries directory
-      #add country X to country row of file
-      #add country Y to country row of file
-    #add not containing screen_ (numbers) to dayofyear row of file
     dirs <- list.dirs(("../RProject2021/"))
-    df <- read.csv(allfiles[1])
+    library(dplyr)
+    df <- read.csv(allfiles[1], header = TRUE)
     if(grepl("countryX", allfiles[1])==TRUE){
       df$country <- "X"
     }else{
       df$country <- "Y"
     }
     day <- regmatches(allfiles[1], regexpr("[0-9].*[0-9]", allfiles[1]))
-    df$dayOfYear <- day
+    df$dayofYear <- day
     for (i in 2:length(allfiles)){
-      d <- read.csv(allfiles[i])
+      d <- read.csv(allfiles[i], header = TRUE)
       if(grepl("countryX", allfiles[i])==TRUE){
         d$country <- "X"
       }
@@ -47,11 +39,12 @@ files <- function(dir){
         d$country <- "Y"
       }
       day <- regmatches(allfiles[i], regexpr("[0-9].*[0-9]", allfiles[i]))
-      d$dayOfYear <- day
+      d$dayofYear <- day
       df <- bind_rows(df, d)
     }
     allD <- as.data.frame(df)
-
+    write.csv(allD, file = "allOfData.csv", col.names = TRUE, row.names = FALSE)
+    allDa <- read.csv("allOfData.csv", header = TRUE, stringsAsFactors = FALSE)
 
 allDe <- read.csv("allData.csv", header = TRUE, stringsAsFactors = FALSE)
 
@@ -165,14 +158,22 @@ for (j in 1:total){
              "marker 8","marker 9","marker 10")
       A=matrix(0,nrow=0,ncol=12)
       colnames(A) = y
-      rowX <- c("X", numOfInfectedX, vectx)
-      rowY <- c("Y", numOfInfectedY, vecty)
+      rowX <- c("X", numOfInfectedX, as.numeric(vectx))
+      rowY <- c("Y", numOfInfectedY, as.numeric(vecty))
       B <- rbind(A, rowX)
       C <- rbind(B, rowY)
       summ <- as.data.frame(C)
+      summs <- melt(summ, id.vars = "country")
       PatientAges<- as.data.frame(agedistribution)
-      print(summ)
+      print(summs)
       print(PatientAges)
+      library(ggplot2)
+      ggplot(summs, aes(variable, value, color = as.factor(country)))+
+        geom_point()+
+        theme_classic()+
+        theme(axis.text.x = element_text(angle=65, vjust=0.6))+
+        scale_y_discrete()
+      
 #total number of infections per day in each country
       days <- c(120:175)
       vectoX <- c()
@@ -210,12 +211,18 @@ for (j in 1:total){
       library(reshape2)
       InfectedPerDay <- data.frame(days, vectoX, vectoY)
       colnames(InfectedPerDay) <- c("days", "# of infected in X", "# of infected in Y")
-    InfectedPerDayymelt <- melt(InfectedPerDay, id.vars = c("days"))
-    print(InfectedPerDay)
-#library(ggplot2)
-
+    InfectedPerDayymelt <- melt(InfectedPerDay, id.vars = "days")
+    InfectedPerDayymelt
+    print(InfectedPerDayymelt)
+library(ggplot2)
+ggplot(InfectedPerDayymelt, aes(days,value, color = as.factor(variable)))+
+  geom_line()+
+  xlab("Days of Year") +
+  ylab("count of infection") +
+  theme(legend.title=element_blank())+
+  theme_classic()
 #ggplot(InfectedPerDay, aes(days))+
- # geom_bar()
+ # geom_col()
 
 #the total number of infected people over the first 5 days in each country
       beginning <- allD[allD$dayofYear < 125,]
@@ -248,4 +255,3 @@ for (j in 1:total){
       print(paste("The total number of people infected in country X on day 125 is", numOfInfectedXinB))
       
 }
-summary(df)
