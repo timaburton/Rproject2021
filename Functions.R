@@ -22,16 +22,20 @@ Convert_csv<-function(dir){
   #add columns 
 
 compile<-function(dir, name){
-  for(i in 1:length(files)){
-    files<-list.files(pattern=".csv$", recursive=TRUE)
-    temp<-read.csv(files[i], header=TRUE) #Object 'files' not found
-    dataset<-rbind(temp)
-    country<-print("Country*") 
-    dataset$country<-country
-    dayofYear<-print("120:175") #Fix it so dayofYear shows up 
-    dataset$dayofYear
-    write.csv(dataset, file=name)
+  setwd(dir)
+  csv_files<-dir(pattern='*(\\d+).csv', recursive=TRUE)
+  for(i in 1:length(csv_files)){
+    if(i==1){
+      df<-read.csv(csv_files[i])
+    }else{
+      df<-rbind(df,read.csv(csv_files[i]))
+    }
   }
+  country<-gsub("*/screen_[0-9]{3}.csv","*",csv_files)
+  df['country']<- country
+  dayofYear<-gsub("screen_*.csv","*",csv_files)
+  df['dayofYear']<-dayofYear
+  write.csv(df, file=name)
 }
 
 ##Summarize the compiled daya in terms of number of screen runs, percent patients infected 
