@@ -1,7 +1,7 @@
 # Analysis Script 
 
 # Set working directory and load data and ggplot library
-setwd("~/Desktop/Fall-2021/Biocomputing/")
+setwd("~/Desktop/Fall-2021/Biocomputing/Rproject2021/")
 allData <- read.table("allData.csv", stringsAsFactors = TRUE, header = TRUE, sep = ",")
 source()
 library(ggplot2)
@@ -25,6 +25,7 @@ positive <- positive[2:length(positive)]
   
 # Add new column to dataframe with the infection data
 allData <- cbind(allData, new_col = positive)
+#allData <- allData[ -c(15:17) ]
 
 # Graphs number of positive cases by day of year, splits by country
 plot1 <- ggplot(data = allData, aes(x = dayofYear, y = new_col, fill=country))+
