@@ -2,42 +2,46 @@ setwd("~/Desktop/RProject2021")
 ##Assisting Functions for Project Code##
 
 ##Convert all files into csv files from space/tab delimintated ones##
-  #define set of files and loop 
-  #load an original file 
-  #write out data in .csv format 
-
 Convert_csv<-function(dir){
-  setwd(dir) #Error in file(file, "rt"): cannot open the connection
-  path<-list.files(pattern=".txt")
+  setwd(dir) 
+  path<-list.files(path=dir, pattern=".txt", recursive = TRUE)
   for (i in 1:length(path)){
-    file<-paste0(dir, path[i])
-    data<-read.table(file, header= TRUE, stringsAsFactors = FALSE)
-    write.csv(data, file=sub(pattern=".txt", replacement=".csv"))
+    file<-path[i]
+    out<-paste0(gsub("\\.txt$","",file),".csv")
+    data<-read.table(file, header= TRUE)
+    write.csv(data, file=out)
   }
 }
   
 ##Compile all Data into a single csv file##
-  #define our set 
-  #open each file 
-  #add columns 
-
+#Only running for screen_175? also need to reformat gsub input for new column data# 
 compile<-function(dir, name){
   setwd(dir)
-  csv_files<-dir(pattern='*(\\d+).csv', recursive=TRUE)
-  for(i in 1:length(csv_files)){
-    if(i==1){
-      df<-read.csv(csv_files[i])
-    }else{
-      df<-rbind(df,read.csv(csv_files[i]))
+  csv_files<-list.files(path="~/Desktop/RProject2021",pattern='*(\\d+).csv', recursive=TRUE, full.names = FALSE)
+  dayofYear<-"dayofYear"
+  country<-"Country"
+  header<-read.table(csv_files[1], header=TRUE, sep = ",")
+  input<-readline(prompt = "What do you want to do with rows with NAs: remove, get warning, include?")
+  for(i in csv_files){
+    if(input=="remove"){
+      df<-read.csv(csv_files[i], header = TRUE, stringsAsFactors = FALSE)
+      x<-na.omit(df)
+      x[,dayofYear]<-gsub("country[A-Z]{1}/screen_*.csv","*",csv_files[i])
+      x[,country]<-gsub("country*/screen_[0-9]{3}.csv","*",csv_files[i])
+    }else if(input=="get warning"){
+      df<-read.csv(csv_files[i], header = TRUE, stringsAsFactors = FALSE)
+      df[,dayofYear]<-gsub("country[A-Z]{1}/screen_*.csv","*",csv_files[i])
+      df[,country]<-gsub("country[A-Z]{1}/screen_*.csv","*",csv_files[i])
+      print("Warning: Data contains NAs ")
+    }else if(input=="include"){
+      df<-read.csv(csv_files[i], header = TRUE, stringsAsFactors = FALSE)
+      df[,dayofYear]<-gsub("country[A-Z]{1}/screen_*.csv","*",csv_files[i])
+      df[,country]<-gsub("country[A-Z]{1}/screen_*.csv","*",csv_files[i])
     }
   }
-  country<-gsub("*/screen_[0-9]{3}.csv","*",csv_files)
-  df['country']<- country
-  dayofYear<-gsub("screen_*.csv","*",csv_files)
-  df['dayofYear']<-dayofYear
   write.csv(df, file=name)
 }
-
+  
 
 
 
