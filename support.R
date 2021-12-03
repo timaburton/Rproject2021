@@ -23,6 +23,8 @@ files <- function(){
   allfiles <- c(allfiles, list.files(dirs[k], pattern = ".csv", full.names = TRUE))
   }
 }
+userNAresponse <- readline(prompt="How would you like to deal with null values in the data? Respond with 1 to remove NAs. Respond with 2 to keep NAs but be warned of their presence. Respond with 3 to include NAs without a warning.")
+
 #add all csv files into a single file with two added columns: country and DayofYear
     dirs <- list.dirs(("../RProject2021/"))
     library(dplyr)
@@ -37,6 +39,14 @@ files <- function(){
     df$dayofYear <- day
     for (i in 2:length(allfiles)){
       d <- read.csv(allfiles[i], header = TRUE)
+      if(userNAresponse==1){
+        na.omit(d)
+      }else if(userNAresponse==2){
+        # code for keeping NAs with warning
+        print("Null values will not be removed from this file")
+      }else{
+        # code for keeping NAs without warning
+      }
       #adds X for country X
       if(grepl("countryX", allfiles[i])==TRUE){
         d$country <- "X"
@@ -59,6 +69,7 @@ allDe <- read.csv("allData.csv", header = TRUE, stringsAsFactors = FALSE)
 
 #analysis of compiled data
 summary <- function(allD){
+library(ggplot2)
   #number of screens run
   total <- nrow(allD)
   print(paste("The total number of screens run was", as.character(total)))
@@ -238,7 +249,7 @@ for (j in 1:total){
 #dayOfYear vs infected count with different colors for each country
 InfectionvsDay<- ggplot(InfectedPerDayymelt, aes(days,value, color = as.factor(variable)))+
   geom_line()+
-  xlab("Days of Year") +
+  xlab("Day of Year") +
   ylab("count of infection") +
   theme(legend.title=element_blank())+
   theme_classic()
