@@ -1,35 +1,61 @@
 setwd("~/Desktop/RProject2021")
 ##Assisting Functions for Project Code##
 
-##Convert all files into csv files from space/tab delimintated ones 
+##Convert all files into csv files from space/tab delimintated ones##
   #define set of files and loop 
   #load an original file 
   #write out data in .csv format 
-Convert_csv<-function(x){
-  for i in directory{
-    read.tables(file=[i], header=TRUE, sep="\t")
+
+Convert_csv<-function(dir){
+  setwd(dir) #Error in file(file, "rt"): cannot open the connection
+  path<-list.files(pattern=".txt")
+  for (i in 1:length(path)){
+    file<-paste0(dir, path[i])
+    data<-read.table(file, header= TRUE, stringsAsFactors = FALSE)
+    write.csv(data, file=sub(pattern=".txt", replacement=".csv"))
   }
-  setwd(x)
-   data<-Read.table("*.csv",header=TRUE, sep="\t", sep=" ")
-  return(data.csv)
 }
   
-##Compile all Data into a single csv file 
+##Compile all Data into a single csv file##
   #define our set 
   #open each file 
   #add columns 
-compile<-function(){
-  read.csv("*.csv", header = TRUE, sep=",")
-  #compile all data into one file#
-  file$country=country
-  file$dayofYear=dayofYear 
-  cbind(, dayofYear, country)
-  #argument to handle NAs 
+
+compile<-function(dir, name){
+  for(i in 1:length(files)){
+    files<-list.files(pattern=".csv$", recursive=TRUE)
+    temp<-read.csv(files[i], header=TRUE) #Object 'files' not found
+    dataset<-rbind(temp)
+    country<-print("Country*") 
+    dataset$country<-country
+    dayofYear<-print("120:175") #Fix it so dayofYear shows up 
+    dataset$dayofYear
+    write.csv(dataset, file=name)
+  }
 }
 
 
+<<<<<<< HEAD
 # Supporting function that takes complied data set and returns summary of number of screens run
 # percent of patients screened that were infected, male vs female patients, and the age distribution of patients. 
+=======
+summarize<-function(i){
+  data<-read.table(file=i, header=TRUE, sep=",")
+  n<-count(data[,])
+  print("number of screen runs", n)
+  #number of rows with at least 1 present 
+  #count male vs. female
+  print("male", "female")
+  #age
+  summary(data$age)
+}
+
+
+
+
+
+# Summarize function (number 3 in supportingFunctions.R)
+>>>>>>> 115cb964ac01a9ba140aaa227ac4f4e32ad6a9d1
 
 # Set working directory
 # Function is designed to be used in the same directory as the compiled data set 
