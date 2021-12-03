@@ -55,7 +55,6 @@ summarize<-function(i){
 
 
 # Summarize function (number 3 in supportingFunctions.R)
->>>>>>> 115cb964ac01a9ba140aaa227ac4f4e32ad6a9d1
 
 # Set working directory
 # Function is designed to be used in the same directory as the compiled data set 
