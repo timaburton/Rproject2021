@@ -13,6 +13,8 @@ Convert_csv<-function(dir){
   }
 }
   
+
+
 ##Compile all Data into a single csv file##
 #Only running for one file? also getting NA for column data 
 compile<-function(dir, name){
@@ -20,27 +22,30 @@ compile<-function(dir, name){
   csv_files<-list.files(path="~/Desktop/RProject2021",pattern='*(\\d+).csv', recursive=TRUE, full.names = FALSE)
   dayofYear<-"dayofYear"
   country<-"Country"
-  input<-readline(prompt = "What do you want to do with rows with NAs: remove, get warning, keep ?")
+  header<-read.table(csv_files[1], header=TRUE, sep = ",")
+  input<-readline(prompt = "What do you want to do with rows with NAs: remove, get warning, include?")
   for(i in csv_files){
     if(input=="remove"){
       df<-read.csv(csv_files[i], header = TRUE, stringsAsFactors = FALSE)
-      df<-na.omit(df)
-      df[,dayofYear]<-gsub("country[A-Z]{1}/screen_*.csv","*",csv_files[i])
-      df[,country]<-gsub("country*/screen_[0-9]{3}.csv","*",csv_files[i])
+      x<-na.omit(df)
+      x[,dayofYear]<-gsub("country[A-Z]{1}/screen_*.csv","*",csv_files[i])
+      x[,country]<-gsub("country*/screen_[0-9]{3}.csv","*",csv_files[i])
     }else if(input=="get warning"){
       df<-read.csv(csv_files[i], header = TRUE, stringsAsFactors = FALSE)
       df[,dayofYear]<-gsub("country[A-Z]{1}/screen_*.csv","*",csv_files[i])
-      df[,country]<-gsub("country*/screen_[0-9]{3}.csv","*",csv_files[i])
-      print("Warning: Data contains NAs")
-    }else if(input=="keep"){
+      df[,country]<-gsub("country[A-Z]{1}/screen_*.csv","*",csv_files[i])
+      print("Warning: Data contains NAs ")
+    }else if(input=="include"){
       df<-read.csv(csv_files[i], header = TRUE, stringsAsFactors = FALSE)
       df[,dayofYear]<-gsub("country[A-Z]{1}/screen_*.csv","*",csv_files[i])
-      df[,country]<-gsub("country*/screen_[0-9]{3}.csv","*",csv_files[i])
+      df[,country]<-gsub("country[A-Z]{1}/screen_*.csv","*",csv_files[i])
     }
   }
-  x<-rbind(df)
-  write.csv(x, file=name)
+  write.csv(df, file=name)
 }
+
+  
+
 
 # Supporting function that takes complied data set and returns summary of number of screens run
 # percent of patients screened that were infected, male vs female patients, and the age distribution of patients. 
@@ -54,7 +59,6 @@ summarize<-function(i){
   #age
   summary(data$age)
 }
-
 
 
 # Summarize function (number 3 in supportingFunctions.R)
