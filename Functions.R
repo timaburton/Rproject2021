@@ -18,15 +18,14 @@ Convert_csv<-function(dir){
 #Only running for one file? also getting NA for column data 
 compile<-function(dir, name, y){
   setwd(dir)
-  dayofYear<-"dayofYear"
-  country<-"country"
   csv_files<-list.files(path=dir,pattern='*(\\d+).csv', recursive=TRUE, full.names = FALSE)
   for(i in 1:length(csv_files)){
     x<-read.table(csv_files[i], header = TRUE,sep = ",", stringsAsFactors = FALSE)
-    x[,dayofYear]<-substr(csv_files[i],start=17, stop=19)
-    x[,country]<-substr(csv_files[i], start=1, stop=8)
-    result1<-x
-    results<-rbind(result1, x)
+    dayofYear<-substr(csv_files[i],start=17, stop=19)
+    country<-substr(csv_files[i], start=1, stop=8)
+    z<-cbind(x,dayofYear,country)
+    result1<-z
+    results<-rbind(z, x)
   } #To deal with NAs#
       if(y==1){
         results<-na.omit(results)
