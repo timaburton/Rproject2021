@@ -27,27 +27,6 @@ compile<-function(){
   #argument to handle NAs 
 }
 
-##Summarize the compiled daya in terms of number of screen runs, percent patients infected 
-  ##male vs. female patients, age distribution 
-  #1. assumes compiled data 
-  #subset 
-  #count 
-  #sum 
-  #print or plot in informative way 
-
-summarize<-function(i){
-  data<-read.table(file=i, header=TRUE, sep=",")
-  n<-count(data[,])
-  print("number of screen runs", n)
-  #number of rows with at least 1 present 
-  #count male vs. female
-  print("male", "female")
-  #age
-  summary(data$age)
-}
-
-
-
 
 # Supporting function that takes complied data set and returns summary of number of screens run
 # percent of patients screened that were infected, male vs female patients, and the age distribution of patients. 
