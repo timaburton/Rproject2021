@@ -27,7 +27,8 @@ compile<-function(dir, name, y){
     x[,dayofYear]<-substr(csv_files[i],start=17, stop=19)
     x[,country]<-substr(csv_files[i], start=1, stop=8)
     result1<-x
-    results<-rbind(result1,x)
+    results<-rbind(result1,x)#Error in arguement having different numbers of columns but everything above is working well^
+    #B/c of error, DayofYear and Country columns are stringing wrong data into the file#
   } #To deal with NAs#
   if(y==1){
     results<-na.omit(results)
