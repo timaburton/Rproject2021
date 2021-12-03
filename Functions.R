@@ -25,7 +25,7 @@ compile<-function(dir, name, y){
     x<-read.table(csv_files[i], header = TRUE,sep = ",", stringsAsFactors = FALSE)
     x[,dayofYear]<-substr(csv_files[i],start=17, stop=19)
     x[,country]<-substr(csv_files[i], start=1, stop=8)
-    result1<-x[1]
+    result1<-x
     results<-rbind(result1, x)
   } #To deal with NAs#
       if(y==1){
