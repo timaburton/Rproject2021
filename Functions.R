@@ -42,22 +42,9 @@ compile<-function(dir, name){
   write.csv(x, file=name)
 }
 
-# Supporting function that takes complied data set and returns summary of number of screens run
+
+# Summarize function that takes complied data set and returns summary of number of screens run
 # percent of patients screened that were infected, male vs female patients, and the age distribution of patients. 
-summarize<-function(i){
-  data<-read.table(file=i, header=TRUE, sep=",")
-  n<-count(data[,])
-  print("number of screen runs", n)
-  #number of rows with at least 1 present 
-  #count male vs. female
-  print("male", "female")
-  #age
-  summary(data$age)
-}
-
-
-
-# Summarize function (number 3 in supportingFunctions.R)
 
 # Set working directory
 # Function is designed to be used in the same directory as the compiled data set 
@@ -74,7 +61,6 @@ summarize <- function(filename){
   
   # Percent of patients screened that were infected 
   infected<-0
-  not_infected<-0
   for(i in 1:nrow(filename_table)){
     if(sum(filename_table[i,3:12])>=1){
       infected<-infected+1
