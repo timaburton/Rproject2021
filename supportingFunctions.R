@@ -42,15 +42,15 @@ compile<-function(dir, name){
   write.csv(x, file=name)
 }
 
-
 # Summarize function that takes complied data set and returns summary of number of screens run
 # percent of patients screened that were infected, male vs female patients, and the age distribution of patients. 
 
 # Set working directory
 # Function is designed to be used in the same directory as the compiled data set 
-setwd("~/Desktop/Fall-2021/Biocomputing/")
+setwd("~/Desktop/Fall-2021/Biocomputing/RProject2021")
 
 # Usage: summarize("filename.csv")
+# Use file name generated above with combined csv data, in this case used "allData.csv" because compile function had errors
 
 summarize <- function(filename){
   filename_table <- read.table(filename, sep = ",", stringsAsFactors = TRUE, header = TRUE)
@@ -100,6 +100,3 @@ summarize <- function(filename){
   # Display both summary graphs in console
   plot_grid(plot1, plot2, ncol=2, nrow =1, width = 8, height = 5)
 }
-
-# Call function
-summarize("allData.csv")
