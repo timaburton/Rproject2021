@@ -23,7 +23,7 @@ files <- function(){
   allfiles <- c(allfiles, list.files(dirs[k], pattern = ".csv", full.names = TRUE))
   }
 }
-userNAresponse <- readline(prompt="How would you like to deal with null values in the data? Respond with 1 to remove NAs. Respond with 2 to keep NAs but be warned of their presence. Respond with 3 to include NAs without a warning.")
+userNAresponse <- readline(prompt="How would you like to deal with null values in the data? Respond with 1 to remove NAs. Respond with 2 to keep NAs but with a warning. Respond with 3 to include NAs without a warning.")
 
 #add all csv files into a single file with two added columns: country and DayofYear
     dirs <- list.dirs(("../RProject2021/"))
@@ -64,6 +64,7 @@ userNAresponse <- readline(prompt="How would you like to deal with null values i
     #writes a file with all compiled data
     write.csv(allD, file = "allOfData.csv", col.names = TRUE, row.names = FALSE)
     allDa <- read.csv("allOfData.csv", header = TRUE, stringsAsFactors = FALSE)
+    print("Type in summary(allDa) to view the statisitcs of all the data")
 #given compiled data
 allDe <- read.csv("allData.csv", header = TRUE, stringsAsFactors = FALSE)
 
