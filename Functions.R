@@ -14,35 +14,34 @@ Convert_csv<-function(dir){
 }
   
 ##Compile all Data into a single csv file##
-#Only running for screen_175? also need to reformat gsub input for new column data# 
+#Only running for one file? also getting NA for column data 
 compile<-function(dir, name){
   setwd(dir)
   csv_files<-list.files(path="~/Desktop/RProject2021",pattern='*(\\d+).csv', recursive=TRUE, full.names = FALSE)
   dayofYear<-"dayofYear"
   country<-"Country"
-  header<-read.table(csv_files[1], header=TRUE, sep = ",")
-  input<-readline(prompt = "What do you want to do with rows with NAs: remove, get warning, include?")
+  input<-readline(prompt = "What do you want to do with rows with NAs: remove, get warning, keep ?")
   for(i in csv_files){
     if(input=="remove"){
       df<-read.csv(csv_files[i], header = TRUE, stringsAsFactors = FALSE)
-      x<-na.omit(df)
-      x[,dayofYear]<-gsub("country[A-Z]{1}/screen_*.csv","*",csv_files[i])
-      x[,country]<-gsub("country*/screen_[0-9]{3}.csv","*",csv_files[i])
+      df<-na.omit(df)
+      df[,dayofYear]<-gsub("country[A-Z]{1}/screen_*.csv","*",csv_files[i])
+      df[,country]<-gsub("country*/screen_[0-9]{3}.csv","*",csv_files[i])
     }else if(input=="get warning"){
       df<-read.csv(csv_files[i], header = TRUE, stringsAsFactors = FALSE)
       df[,dayofYear]<-gsub("country[A-Z]{1}/screen_*.csv","*",csv_files[i])
-      df[,country]<-gsub("country[A-Z]{1}/screen_*.csv","*",csv_files[i])
-      print("Warning: Data contains NAs ")
-    }else if(input=="include"){
+      df[,country]<-gsub("country*/screen_[0-9]{3}.csv","*",csv_files[i])
+      print("Warning: Data contains NAs")
+    }else if(input=="keep"){
       df<-read.csv(csv_files[i], header = TRUE, stringsAsFactors = FALSE)
       df[,dayofYear]<-gsub("country[A-Z]{1}/screen_*.csv","*",csv_files[i])
-      df[,country]<-gsub("country[A-Z]{1}/screen_*.csv","*",csv_files[i])
+      df[,country]<-gsub("country*/screen_[0-9]{3}.csv","*",csv_files[i])
     }
   }
-  write.csv(df, file=name)
+  x<-rbind(df)
+  write.csv(x, file=name)
 }
   
-
 
 
 # Summarize function (number 3 in supportingFunctions.R)
