@@ -1,6 +1,14 @@
-setwd("C:/Users/megan/Desktop/RProject/RProject2021")
+setwd("C:/Users/tb/Desktop/Biocomputing/Rproject2021/")
 source("support.R")
+
+dirs <- c('countryX', 'countryY')
+
+convert_csv(dirs)
+compile_files(dirs)
+allDa <- read.csv("allOfData.csv", header = TRUE, stringsAsFactors = FALSE)
 summary(allDa)
+
+
 #Question 1
 #Based on this data, the outbreak likely broke out in country X as there are 60 infections on day 120 (day 1) in country X
 #compared to 16 infections on day 120 in country Y. Additionally, over the first five days, there are 55 total infections 

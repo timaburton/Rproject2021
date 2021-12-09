@@ -1,32 +1,33 @@
-setwd("C:/Users/megan/Desktop/RProject/RProject2021")
-direct <- list.dirs(".")
+setwd("C:/Users/tb/Desktop/Biocomputing/Rproject2021/")
+
+
 library(reshape2)
-alltxt <- c()
+
 #finds all the text files in each directory
-for (i in 1:length(direct)){
+convert_csv <- function(dirs){
+  alltxt <- c()
+  for (i in 1:length(dirs)){
     alltxt <- c(alltxt, list.files(dirs[i], pattern = ".txt", full.names = TRUE))
+  }
+  
+  #change files in the directory that are .txt files into .csv files
+  for (i in 1:length(alltxt)){
+    input<-read.table(alltxt[i], sep = "", stringsAsFactors = FALSE, header=TRUE)
+    out <- sub(".txt", ".csv", alltxt[i])
+    write.table(input, file=out, sep =",", col.names = TRUE, row.names = FALSE)
+  }
 }
 
-#change files in the directory that are .txt files into .csv files
-for (i in 1:length(alltxt)){
-  input<-read.table(alltxt[i], sep = "", stringsAsFactors = FALSE, header=TRUE)
-  out <- sub(".txt", ".csv", alltxt[i])
-  write.table(input, file=out, sep =",", col.names = TRUE, row.names = FALSE)
-}
+
 
 
 #finds all the csv files in each directory
-files <- function(){
-  dirs <- list.files(( path = "."))
-  allfiles <- c()
-  for (k in 1:length(dirs)){
-  allfiles <- c(allfiles, list.files(dirs[k], pattern = ".csv", full.names = TRUE))
-  }
-}
+compile_files <- function(dirs){
+allfiles <- list.files(pattern = ".csv", recursive = T, full.names = TRUE)
+
 userNAresponse <- readline(prompt="How would you like to deal with null values in the data? Respond with 1 to remove NAs. Respond with 2 to keep NAs but with a warning. Respond with 3 to include NAs without a warning.")
 
 #add all csv files into a single file with two added columns: country and DayofYear
-    dirs <- list.dirs(("../RProject2021/"))
     library(dplyr)
     #establishes the first file to be compiled and df
     df <- read.csv(allfiles[1], header = TRUE)
@@ -63,10 +64,12 @@ userNAresponse <- readline(prompt="How would you like to deal with null values i
     allD <- as.data.frame(df)
     #writes a file with all compiled data
     write.csv(allD, file = "allOfData.csv", col.names = TRUE, row.names = FALSE)
-    allDa <- read.csv("allOfData.csv", header = TRUE, stringsAsFactors = FALSE)
-    print("Type in summary(allDa) to view the statisitcs of all the data")
+    print("Type in summary(allDa) to view the statisitcs of all the data") 
+}
+
+
 #given compiled data
-allDe <- read.csv("allData.csv", header = TRUE, stringsAsFactors = FALSE)
+#allDe <- read.csv("allData.csv", header = TRUE, stringsAsFactors = FALSE)
 
 #analysis of compiled data
 summary <- function(allD){
