@@ -1,9 +1,18 @@
 # Analysis Script 
 
 # Set working directory and load data and ggplot library
-setwd("~/Desktop/Fall-2021/Biocomputing/Rproject2021/")
-allData <- read.table("allData.csv", stringsAsFactors = TRUE, header = TRUE, sep = ",")
-source()
+setwd("C:/Users/tb/Desktop/Biocomputing/Rproject2021/")
+
+source("supportingFunctions.R") #load supporting functions
+
+Convert_csv("C:/Users/tb/Desktop/Biocomputing/Rproject2021/countryY") #convert the .txt files in countryY to .csv
+
+compile("C:/Users/tb/Desktop/Biocomputing/Rproject2021/", 'allData.csv', y = 2) 
+
+allData <- read.csv('allData.csv', header = T)
+
+summarize('allData.csv')
+
 library(ggplot2)
 
 
@@ -46,7 +55,7 @@ install.packages("reshape")
 library(reshape)
 
 # Convert subset of data from wide format to long format so that it can be graphed
-data <- allData[,3:13]
+data <- allData[,c(3:12, 14)]
 data_long <- melt(data, id.vars = c('country'))
 
 # Graphs positive infections for each marker and splits by country

@@ -1,4 +1,4 @@
-setwd("~/Desktop/RProject2021")
+
 ##Assisting Functions for Project Code##
 
 ##Convert all files into csv files from space/tab delimintated ones##
@@ -9,10 +9,12 @@ Convert_csv<-function(dir){
     file<-path[i]
     out<-paste0(gsub("\\.txt$","",file),".csv")
     data<-read.table(file, header= TRUE)
-    write.csv(data, file=out)
+    write.csv(data, file=out, row.names = F) # it was adding row names, which caused later functions to fail because of different numbers of columns
   }
 }
-  
+
+
+
 ##Compile all Data into a single csv file##
 #Only running for one file? also getting NA for column data
 #To Run function compile(directory path, name of wanted file, NA Arguement)
@@ -21,30 +23,35 @@ compile<-function(dir, name, y){
   setwd(dir)
   dayofYear<-"dayofYear"
   country<-"country"
-  csv_files<-list.files(path="~/Desktop/Rproject2021",pattern='*(\\d+).csv', recursive=TRUE, full.names = FALSE)
+  csv_files<-list.files(path=dir,pattern='*(\\d+).csv', recursive=TRUE, full.names = FALSE)
   for(i in 1:length(csv_files)){
     x<-read.table(csv_files[i], header = TRUE,sep = ",", stringsAsFactors = FALSE)
     x[,dayofYear]<-substr(csv_files[i],start=17, stop=19)
     x[,country]<-substr(csv_files[i], start=1, stop=8)
-    result1<-x
-    results<-rbind(result1,x)#Error in arguement having different numbers of columns but everything above is working well^
+    if (i == 1){ # this if/else statment is needed to properly set up the results table in the first
+      results = x # run through the loop, and then append each new table to the growing results table
+    } else{ #for the rest of the runs through the loop
+    results<-rbind(results,x)
+    }#Error in arguement having different numbers of columns but everything above is working well^
     #B/c of error, DayofYear and Country columns are stringing wrong data into the file#
   } #To deal with NAs#
   if(y==1){
     results<-na.omit(results)
   }else if(y==2){
-    return(print("Warning: File contains NAs"))
+    print("Warning: File contains NAs")#with return(), the function quits out when y == 2 and doesn't save the file
   }else if(y==3){
   }
-  write.csv(results, file=name)
+  write.csv(results, file=name, row.names = F) #
 }
+
+
 
 # Summarize function that takes complied data set and returns summary of number of screens run
 # percent of patients screened that were infected, male vs female patients, and the age distribution of patients. 
 
 # Set working directory
 # Function is designed to be used in the same directory as the compiled data set 
-setwd("~/Desktop/Fall-2021/Biocomputing/RProject2021")
+
 
 # Usage: summarize("filename.csv")
 # Use file name generated above with combined csv data, in this case used "allData.csv" because compile function had errors
