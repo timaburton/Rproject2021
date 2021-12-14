@@ -3,8 +3,8 @@
 #convert txt to csv (only in countryY) 
 convert_to_csv <- function(directory){
 setwd(directory)
-for (i in 1:length(FILES)){
   FILES <- list.files(pattern = ".txt")
+for (i in 1:length(FILES)){
   FILE=read.table(file=FILES[i],header=T)
   write.table(FILE,file=paste0("directory3",sub(".txt","",FILES[i]),".csv"),row.names=F,quote=F,sep=",")
 } 
@@ -46,7 +46,7 @@ compileX <- function(directory){
   return(alldata)
 }
   
-alldata <- compileX(directory)
+
 
 #adding country Y files to alldata 
 compileY <- function(directory){
@@ -84,17 +84,17 @@ compileY <- function(directory){
   return(alldata)
 }
 
-alldata <- rbind(alldata, compileY(directory)
+
 
 
 #summarize the data once all compiled
 #1 summary = number of test screens ran 
-num_screens <- function(directory){
+num_screens <- function(directory){ #These functions should use the argument inside the function
 num_rows <- nrow(alldata)
 return(num_rows)
 }
-#This is the number of screens ran 
-num_screens(directory)
+
+
 
 #2 summary-percent of patients that were infected 
 percent <- function(directory){
@@ -128,8 +128,7 @@ for(row in 1:length(alldata$marker01)){
   return(percent_infected)
 }
 
-#This the percent of patients infected 
-percent(directory) 
+
 
 #3 summary-number of male versus female patients 
 #This graph offers another visualization of the males versus females 
@@ -138,14 +137,10 @@ library(ggplot2)
 male_versus_female <- function(directory){
 ggplot(data=alldata, aes(x=gender)) + geom_bar() + theme_classic()
 }
-male_versus_female(directory)
 
-number_of_males <- nrow(alldata[alldata$gender=="male",])
-number_of_females <- nrow(alldata[alldata$gender=="female",])
-#This is the number of males who were patients 
-number_of_males
-#This is the number of females who were patients 
-number_of_females
+
+
+
 
 #4 summary - age distribution of patients 
 #This graph shows the density of ages among the patients 
@@ -154,6 +149,6 @@ ages <- function(directory){
 ggplot(data=alldata, aes(x=age)) + geom_density() + theme_classic() 
 }
 
-ages(directory)
+
 
        

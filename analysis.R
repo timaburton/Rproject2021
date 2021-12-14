@@ -1,6 +1,36 @@
 #### Analysis File ####
 #source all the functions from supportingFunctions.
+directory = "C:/Users/tb/Desktop/Biocomputing/Rproject2021/"
+setwd(directory)
 source(file="supportingFunctions.R") 
+
+
+
+alldata <- compileX("C:/Users/tb/Desktop/Biocomputing/Rproject2021/countryX")
+
+convert_to_csv("C:/Users/tb/Desktop/Biocomputing/Rproject2021/countryY")
+alldata <- rbind(alldata, compileY("C:/Users/tb/Desktop/Biocomputing/Rproject2021/countryY"))
+
+
+#This is the number of screens ran 
+num_screens(directory) #this should point to a single file, not a directory
+
+#This the percent of patients infected 
+percent(directory) #this should point to a single file, not a directory
+
+
+male_versus_female(directory) #this should point to a single file, not a directory
+
+
+number_of_males <- nrow(alldata[alldata$gender=="male",])
+number_of_females <- nrow(alldata[alldata$gender=="female",])
+
+#This is the number of males who were patients 
+number_of_males
+#This is the number of females who were patients 
+number_of_females
+
+ages(directory) #this should point to a single file, not a directory
 
 #convert_to_csv Converts all the txt files in the Country Y directory to csv files, use the country Y directory path for directory 
 #compile X compiles all csv files from country X into one files, use the country X directory path for directory 
@@ -12,57 +42,12 @@ source(file="supportingFunctions.R")
 
 ### 1.In which country (X or Y) did the disease outbreak likely begin?
 ############ whichever has more infections on the first day 
-infectedX <- 0
 
-for(row in 1:length(alldata)){
-  if((alldata$marker01[row]=="1") && (alldata$country=="X") && (alldata$dayofYear=="120")){
-    infectedX <- infectedX  + 1
-  }else if((alldata$marker02[row]=="1") && (alldata$country=="X") && (alldata$dayofYear=="120")){
-    infectedX <- infectedX  + 1
-  }else if((alldata$marker03[row]=="1") && (alldata$country=="X") && (alldata$dayofYear=="120")){
-    infectedX  <- infectedX  + 1
-  }else if((alldata$marker04[row]=="1") && (alldata$country=="X") && (alldata$dayofYear=="120")){
-    infectedX  <- infectedX  + 1
-  }else if((alldata$marker05[row]=="1") && (alldata$country=="X") && (alldata$dayofYear=="120")){
-    infectedX  <- infectedX  + 1
-  }else if((alldata$marker06[row]=="1") && (alldata$country=="X") && (alldata$dayofYear=="120")){
-    infectedX  <- infectedX  + 1
-  }else if((alldata$marker07[row]=="1") && (alldata$country=="X") && (alldata$dayofYear=="120")){
-    infectedX <- infectedX + 1
-  }else if((alldata$marker08[row]=="1") && (alldata$country=="X") && (alldata$dayofYear=="120")){
-    infectedX <- infectedX + 1
-  }else if((alldata$marker09[row]=="1") && (alldata$country=="X") && (alldata$dayofYear=="120")){
-    infectedX <- infectedX + 1
-  }else if((alldata$marker10[row]=="1") && (alldata$country=="X") && (alldata$dayofYear=="120")){
-    infectedX <- infectedX + 1
-  } 
-}
 
-infectedY <- 0
 
-for(row in 1:length(alldata)){
-  if((alldata$marker01[row]=="1") && (alldata$country=="Y") && (alldata$dayofYear=="120")){
-    infectedY <- infectedY  + 1
-  }else if((alldata$marker02[row]=="1") && (alldata$country=="Y") && (alldata$dayofYear=="120")){
-    infectedY <- infectedY  + 1
-  }else if((alldata$marker03[row]=="1") && (alldata$country=="Y") && (alldata$dayofYear=="120")){
-    infectedY  <- infectedY  + 1
-  }else if((alldata$marker04[row]=="1") && (alldata$country=="Y") && (alldata$dayofYear=="120")){
-    infectedY  <- infectedY  + 1
-  }else if((alldata$marker05[row]=="1") && (alldata$country=="Y") && (alldata$dayofYear=="120")){
-    infectedY  <- infectedY  + 1
-  }else if((alldata$marker06[row]=="1") && (alldata$country=="Y") && (alldata$dayofYear=="120")){
-    infectedY  <- infectedY  + 1
-  }else if((alldata$marker07[row]=="1") && (alldata$country=="Y") && (alldata$dayofYear=="120")){
-    infectedY <- infectedY + 1
-  }else if((alldata$marker08[row]=="1") && (alldata$country=="Y") && (alldata$dayofYear=="120")){
-    infectedY <- infectedY + 1
-  }else if((alldata$marker09[row]=="1") && (alldata$country=="Y") && (alldata$dayofYear=="120")){
-    infectedY <- infectedY + 1
-  }else if((alldata$marker10[row]=="1") && (alldata$country=="Y") && (alldata$dayofYear=="120")){
-    infectedY <- infectedY + 1
-  } 
-}
+sum(alldata[alldata$dayofYear == "120" & alldata$country == "X", 3:12]) 
+sum(alldata[alldata$dayofYear == "120" & alldata$country == "Y", 3:12])
+
 
 #This the number of infected people on the first day in country X
 infectedX
